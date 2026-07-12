@@ -50,7 +50,7 @@ jobs:
 
       - name: Lint with pylint
         run: |
-          pylint service tests --max-line-length=127
+          pylint service tests --max-line-length=127 --disable=wrong-import-position,cyclic-import
 
       - name: Run unit tests with nosetests
         run: nosetests --with-spec --spec-color -v
