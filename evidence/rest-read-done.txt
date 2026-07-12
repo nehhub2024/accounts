@@ -1,0 +1,16 @@
+$ curl -i -X GET http://localhost:8080/accounts/1
+
+HTTP/1.1 200 OK
+Server: Werkzeug/3.1.7 Python/3.12.3
+Date: Sat, 11 Jul 2026 21:39:01 GMT
+Content-Type: application/json
+Content-Length: 166
+Permissions-Policy: browsing-topics=()
+X-Frame-Options: SAMEORIGIN
+X-Content-Type-Options: nosniff
+Content-Security-Policy: default-src 'self'; object-src 'none'
+Referrer-Policy: strict-origin-when-cross-origin
+Access-Control-Allow-Origin: *
+Connection: close
+
+{"active":true,"address":"123 Main St, Anytown, NY","date_joined":"2026-07-11","email":"john.doe@example.com","id":1,"name":"John Doe","phone_number":"555-123-4567"}

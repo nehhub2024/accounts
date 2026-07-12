@@ -1,0 +1,3 @@
+FLASK_APP=service:app
+FLASK_DEBUG=True
+PORT=8080

@@ -1,0 +1,51 @@
+nose.config: INFO: Ignoring files matching ['^\\.', '^_', '^setup\\.py$']
+nose.plugins.cover: INFO: Coverage report will include only packages: ['service']
+
+Test Cases for Account Model
+/usr/lib/python3.12/unittest/case.py:580: RuntimeWarning: TestResult has no addDuration method
+  warnings.warn("TestResult has no addDuration method",
+- It should Create an account and add it to the database
+- It should Create an Account and assert that it exists
+- It should Delete an Account from the database
+- It should Deserialize an account
+- It should not Deserialize an account with a KeyError
+- It should not Deserialize an account with a TypeError
+- It should List all Accounts in the database
+- It should Read an account
+- It should Serialize an account
+- It should Update an account
+- It should not Update an Account with no id
+
+Account Service Tests
+- It should return a CORS Access-Control-Allow-Origin header
+- It should Create a new Account
+- It should not Create an Account with no Content-Type
+- It should not Create an Account with wrong Content-Type
+- It should Delete an Account
+- It should return 204 even if the Account does not exist (idempotent)
+- It should Read a single Account
+- It should Get a list of Accounts
+- It should not Read an Account that is not found
+- It should be healthy
+- It should call the Home Page
+- It should return security headers set by Talisman
+- It should Update an existing Account
+- It should not Update an Account that does not exist
+
+Name                               Stmts   Miss  Cover   Missing
+----------------------------------------------------------------
+service/__init__.py                   22     22     0%   8-49
+service/common/__init__.py             0      0   100%
+service/common/error_handlers.py      32     10    69%   14, 20-22, 50-52, 80-82
+service/common/log_handlers.py         7      2    71%   14-15
+service/common/status.py               9      0   100%
+service/config.py                      6      0   100%
+service/models.py                     64      0   100%
+service/routes.py                     59      0   100%
+----------------------------------------------------------------
+TOTAL                                199     34    83%
+----------------------------------------------------------------------
+Ran 25 tests in 1.714s
+
+OK
+

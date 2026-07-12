@@ -1,0 +1,97 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: cd-pipeline
+spec:
+  workspaces:
+    - name: pipeline-workspace
+  params:
+    - name: repo-url
+      type: string
+    - name: branch
+      type: string
+      default: main
+    - name: build-image
+      type: string
+
+  tasks:
+    ##############################################
+    # Clone the source repository
+    ##############################################
+    - name: clone
+      taskRef:
+        name: git-clone
+      workspaces:
+        - name: output
+          workspace: pipeline-workspace
+      params:
+        - name: url
+          value: "$(params.repo-url)"
+        - name: revision
+          value: "$(params.branch)"
+
+    ##############################################
+    # Lint the code with flake8
+    ##############################################
+    - name: lint
+      taskRef:
+        name: flake8
+      runAfter:
+        - clone
+      workspaces:
+        - name: source
+          workspace: pipeline-workspace
+      params:
+        - name: args
+          value: ["service", "tests", "--count", "--max-complexity=10", "--max-line-length=127"]
+
+    ##############################################
+    # Run the unit tests with nosetests
+    ##############################################
+    - name: tests
+      taskRef:
+        name: nose
+      runAfter:
+        - clone
+      workspaces:
+        - name: source
+          workspace: pipeline-workspace
+      params:
+        - name: args
+          value: ["-v", "--with-spec", "--spec-color"]
+        - name: database_uri
+          value: "sqlite:///test.db"
+
+    ##############################################
+    # Build the Docker image with buildah/kaniko
+    ##############################################
+    - name: build
+      taskRef:
+        name: buildah
+      runAfter:
+        - lint
+        - tests
+      workspaces:
+        - name: source
+          workspace: pipeline-workspace
+      params:
+        - name: IMAGE
+          value: "$(params.build-image)"
+
+    ##############################################
+    # Deploy to the Kubernetes cluster
+    ##############################################
+    - name: deploy
+      taskRef:
+        name: openshift-client
+      runAfter:
+        - build
+      workspaces:
+        - name: manifest-dir
+          workspace: pipeline-workspace
+      params:
+        - name: SCRIPT
+          value: |
+            echo "Deploying to Kubernetes..."
+            kubectl set image deployment/accounts accounts=$(params.build-image) --record
+            kubectl rollout status deployment/accounts
