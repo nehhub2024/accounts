@@ -1,7 +1,7 @@
 # Customer Accounts Microservice
 
-[![CI Build](https://github.com/<your-username>/accounts/actions/workflows/ci-build.yaml/badge.svg)](https://github.com/<your-username>/accounts/actions)
-[![codecov](https://codecov.io/gh/<your-username>/accounts/branch/main/graph/badge.svg)](https://codecov.io/gh/<your-username>/accounts)
+[![CI Build](https://github.com/nehhub2024/accounts/actions/workflows/ci-build.yaml/badge.svg)](https://github.com/nehhub2024/accounts/actions)
+[![codecov](https://codecov.io/gh/nehhub2024/accounts/branch/main/graph/badge.svg)](https://codecov.io/gh/nehhub2024/accounts)
 
 ## Overview
 
