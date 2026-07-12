@@ -1,0 +1,64 @@
+name: CI Build
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - "README.md"
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - "README.md"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: python:3.9-slim
+
+    services:
+      postgres:
+        image: postgres:alpine
+        env:
+          POSTGRES_PASSWORD: pgs3cr3t
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: |
+          apt-get update
+          apt-get install -y gcc libpq-dev
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip wheel
+          pip install -r requirements.txt
+
+      - name: Lint with flake8
+        run: |
+          flake8 service tests --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 service tests --count --max-complexity=10 --max-line-length=127 --statistics
+
+      - name: Lint with pylint
+        run: |
+          pylint service tests --max-line-length=127
+
+      - name: Run unit tests with nosetests
+        run: nosetests --with-spec --spec-color -v
+        env:
+          DATABASE_URI: "postgresql://postgres:pgs3cr3t@postgres:5432/postgres"
+
+      - name: Install coverage tools
+        run: pip install coveralls
+
+      - name: Upload code coverage
+        run: coverage report -m
